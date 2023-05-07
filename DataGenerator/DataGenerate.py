@@ -111,7 +111,7 @@ class Ui(QtWidgets.QMainWindow):
             self.check_points = True
             path_image = self.path_dir[-self.count_image]
 
-            self.Name_lineEdit.setText(f"{path_image[len(path_dir)+1:]}")
+            self.Name_lineEdit.setText(f"{path_image[len(self.path_dir)+1:]}")
             self.__getView_img(path_image, True)
             self.count_image-=1
         else:
@@ -223,7 +223,6 @@ class Ui(QtWidgets.QMainWindow):
                 # Отображение
         self.Warp_label.setPixmap(image2pixmap)
 
-path_dir = te
 
 parser = argparse.ArgumentParser(description='Директория для папок')
 parser.add_argument('--Folder', type=str)
