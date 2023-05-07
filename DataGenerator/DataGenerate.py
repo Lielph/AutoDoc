@@ -40,7 +40,14 @@ class PaperGeometry:
         elif self.bl is None:
             self.bl = coord
             self.check = True
-        
+
+    def clear(self):
+        self.ul = None
+        self.ur = None 
+        self.br = None  
+        self.bl = None 
+        self.check = False
+
     def convert_json(self, path):
         data = {
             'ul': self.ul,
@@ -82,8 +89,11 @@ class Ui(QtWidgets.QMainWindow):
 
         self.Next_pushButton.clicked.connect(self.load_image)
         self.Save_pushButton.clicked.connect(self.save_json)
+        self.Change_pushButton.clicked.connect(self.clear)
+
         self.Oridinal_label.mousePressEvent = self.__click_image
-        
+
+        self.Oridinal_label.mouseMoveEvent = self.__view_enlargement
 
         self.count_image = len(os.listdir(path_dir))
         if self.count_image>0:
@@ -124,6 +134,42 @@ class Ui(QtWidgets.QMainWindow):
             image2pixmap = QPixmap.fromImage(qimage2ndarray.array2qimage(image))
             # Отображение
             self.Oridinal_label.setPixmap(image2pixmap)
+
+    def clear(self):
+        self.coord_sheet.clear()
+        path_image = self.path_dir[-self.count_image-1]
+        image = cv2.imread(path_image)
+        h, w  = self.size_label.height(), self.size_label.width()
+        image = cv2.resize(image,(w,h),cv2.INTER_CUBIC)
+            # Перевод изображения в Qpixmap
+        image2pixmap = QPixmap.fromImage(qimage2ndarray.array2qimage(image))
+        # Отображение
+        self.Oridinal_label.setPixmap(image2pixmap)
+
+    def __view_enlargement(self,event):
+        '''Увеличение'''
+        if not self.coord_sheet.check:
+            pose = self.__getPos(event)
+            image = self.Oridinal_label.pixmap().toImage()
+            image = qimage2ndarray.rgb_view(image)
+            size_cell = 10
+            crop_img = image[pose[1]-size_cell:pose[1]+size_cell, pose[0]-size_cell:pose[0]+size_cell]
+
+            try:
+                h, w  = self.size_label.height(), self.size_label.width()
+                result = cv2.resize(crop_img,(w,h),cv2.INTER_CUBIC)
+
+                center = (int(w/2), int(h/2))
+                size = 25
+                cv2.line(result, (center[0]-size, center[1]),(center[0]+size, center[1]), (255,0,0),2)
+                cv2.line(result, (center[0], center[1]-size),(center[0], center[1]+size), (255,0,0),2)
+
+                image2pixmap = QPixmap.fromImage(qimage2ndarray.array2qimage(result))
+                    # Отображение
+                self.Warp_label.setPixmap(image2pixmap)
+            except:
+                pass
+        pass 
 
     def __update_text(self):
         paper = self.coord_sheet
@@ -177,8 +223,15 @@ class Ui(QtWidgets.QMainWindow):
                 # Отображение
         self.Warp_label.setPixmap(image2pixmap)
 
-path_dir = '/Users/dimka777/Documents/GitHub/AutoDoc/TestImages'
+path_dir = te
+
+parser = argparse.ArgumentParser(description='Директория для папок')
+parser.add_argument('--Folder', type=str)
+args = parser.parse_args()
+
+folder = args.Folder
+
 app = QtWidgets.QApplication(sys.argv)
-window = Ui(path_dir)
+window = Ui(folder)
 window.show()
 app.exec_()
