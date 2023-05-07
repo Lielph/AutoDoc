@@ -86,7 +86,7 @@ class Ui(QtWidgets.QMainWindow):
         self.A4_hieght = 3508
         self.A4_width = 2480
         self.coord_sheet = None
-
+        
         self.Next_pushButton.clicked.connect(self.load_image)
         self.Save_pushButton.clicked.connect(self.save_json)
         self.Change_pushButton.clicked.connect(self.clear)
@@ -95,9 +95,11 @@ class Ui(QtWidgets.QMainWindow):
 
         self.Oridinal_label.mouseMoveEvent = self.__view_enlargement
 
-        self.count_image = len(os.listdir(path_dir))
-        if self.count_image>0:
-            self.path_dir = [ os.path.join(path_dir, path_image) for path_image in os.listdir(path_dir)]
+        
+        
+        self.path_dir = [ os.path.join(path_dir, path_image) for path_image in os.listdir(path_dir) ]
+        self.path_dir = list(filter(lambda x: (x.split('.')[-1] != 'json'), self.path_dir))
+        self.count_image = len(self.path_dir)
         self.load_image()
         
     def save_json(self):
@@ -111,7 +113,7 @@ class Ui(QtWidgets.QMainWindow):
             self.check_points = True
             path_image = self.path_dir[-self.count_image]
 
-            self.Name_lineEdit.setText(f"{path_image[len(path_dir)+1:]}")
+            self.Name_lineEdit.setText(f"{path_image[len(self.path_dir)+1:]}")
             self.__getView_img(path_image, True)
             self.count_image-=1
         else:
@@ -223,14 +225,14 @@ class Ui(QtWidgets.QMainWindow):
                 # Отображение
         self.Warp_label.setPixmap(image2pixmap)
 
-path_dir = te
 
-parser = argparse.ArgumentParser(description='Директория для папок')
-parser.add_argument('--Folder', type=str)
-args = parser.parse_args()
+# parser = argparse.ArgumentParser(description='Директория для папок')
+# parser.add_argument('--Folder', type=str)
+# args = parser.parse_args()
 
-folder = args.Folder
+# folder = args.Folder
 
+folder = '/Users/dimka777/Documents/GitHub/AutoDoc/TestImages'
 app = QtWidgets.QApplication(sys.argv)
 window = Ui(folder)
 window.show()
