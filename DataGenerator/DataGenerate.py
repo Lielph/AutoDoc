@@ -75,7 +75,7 @@ class PaperGeometry:
 class Ui(QtWidgets.QMainWindow):
     def __init__(self, path_dir):
         super(Ui, self).__init__()
-        uic.loadUi('DataGenerator/main_form.ui',self)
+        uic.loadUi('/Users/dimka777/Documents/GitHub/AutoDoc/DataGenerator/main_form.ui',self)
 
         self.size_label = self.Oridinal_label.size()
         
