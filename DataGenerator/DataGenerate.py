@@ -61,7 +61,7 @@ class PaperGeometry:
             outfile.write(json_string)
         
     def get_matrix_points(self):
-        return np.float32([ self.ul,  self.ur, self.br,  self.bl])
+        return np.float32([self.ul,  self.ur, self.br,  self.bl])
     
     def __convert_size(self, coord):
         
