@@ -13,8 +13,8 @@ class DocumentAlignment:
         self.points = None
         self.path_image = path_image
         self.new_h, self.new_w = 256, 256
-        self.__A4_height = 512
-        self.__A4_width = 512
+        self.__A4_height = 1024
+        self.__A4_width = 1024
 
         self.__generate_data()
         self.get_points()
@@ -37,6 +37,7 @@ class DocumentAlignment:
             kernel = np.ones((20, 20), np.uint8)
             mask_ = cv2.erode(mask_, kernel)
             mask_ = cv2.dilate(mask_, kernel)
+
             # контуры
             contour, hierarchy = cv2.findContours(np.uint8(mask_), cv2.RETR_EXTERNAL,
                                                   cv2.CHAIN_APPROX_NONE)
@@ -46,7 +47,7 @@ class DocumentAlignment:
 
         self.points = points_
         # отладка
-        # self.draw_points()
+        # self.__draw_points()
 
     def __draw_points(self):
         image_ = self.image.copy()
@@ -84,8 +85,9 @@ class DocumentAlignment:
 
 
 """пример использования"""
-# test_path = r'E:\GitHub\AutoDoc\TestImages\IMG_3228.JPG'
-# test = DocumentAlignment(test_path).warp_image
+test_path = r'E:\GitHub\AutoDoc\TestImages\IMG_3229.JPG'
+test = DocumentAlignment(test_path)
+test = test.warp_image
 #
-# cv2.imshow('d', test)
-# cv2.waitKey()
+cv2.imshow('d', test)
+cv2.waitKey()
